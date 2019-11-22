@@ -3,6 +3,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const chalk = require('chalk');
 
+
+
 dotenv.config();
 
 const app = express();
@@ -18,3 +20,7 @@ if(!db) {
 } else {
   console.log(chalk.bgGreen('Success connecting to db'))
 }
+
+const authenticationRoutes = require('./routes/authentication.routes');
+
+app.use('/auth', authenticationRoutes);

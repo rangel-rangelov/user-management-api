@@ -6,7 +6,15 @@ const SALT_FACTOR = 10;
 const UserSchema = mongoose.Schema({
   username: {
     type: String,
-    required: true
+    required: true,
+    unique: true,
+    trim: true
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true
   },
   password: {
     type: String,
@@ -18,7 +26,7 @@ const UserSchema = mongoose.Schema({
   }
 })
 
-UserSchema.pre('save', next => {
+UserSchema.pre('save', function(next) {
   const user = this;
 
   if (!user.isModified('password')) return next();
@@ -35,11 +43,13 @@ UserSchema.pre('save', next => {
   })
 });
 
-UserSchema.methods.comparePassword = (candidatePassword, cb) => {
+UserSchema.methods.comparePassword = function(candidatePassword, cb) {
   bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
     if(err) return cb(err);
     cb(null, isMatch);
   })
 };
 
-module.exports = mongoose.model('users', UserSchema);
+const User = mongoose.model('users', UserSchema);
+
+module.exports = User;

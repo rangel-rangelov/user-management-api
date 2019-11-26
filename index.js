@@ -2,14 +2,18 @@ const dotenv = require('dotenv');
 const express = require('express');
 const mongoose = require('mongoose');
 const chalk = require('chalk');
-
+const bodyParser = require('body-parser')
 
 
 dotenv.config();
 
 const app = express();
 
-app.listen(process.env.PORT, () => { console.log(`Server is running on ${process.env.PORT} port.`)});
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+
+app.use(bodyParser.json());
 
 mongoose.connect(process.env.DB_URL, { useNewUrlParser: true });
 
@@ -21,6 +25,10 @@ if(!db) {
   console.log(chalk.bgGreen('Success connecting to db'))
 }
 
-const authenticationRoutes = require('./routes/authentication.routes');
+const routes = require('./routes/routes');
 
-app.use('/auth', authenticationRoutes);
+app.use('/api', routes);
+
+app.listen(process.env.PORT, () => {
+  console.log(`Server is running on ${process.env.PORT} port.`)
+});
